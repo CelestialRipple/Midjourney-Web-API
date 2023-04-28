@@ -10,7 +10,21 @@
 * 🔐 可设置跨域限制，防盗用
 
 ## QuickStart快速开始
+1 clone项目
+```shell
+git clone https://github.com/CelestialRipple/Midjourney-Web-API
+cd Midjourney-Web-API
+```
+2 获取Cookie（请确认你可以在discord中使用Midjourney绘图）
+- 进入Discord中与Midjourney Bot的对话框-
+- 打开任一浏览器的开发者工具（右键/F12），选中网络（network）选项
+- 发送任意绘图请求
+- 开发者工具中搜索interaction，查看请求头部与负载
+example：
+![Uploadi![weixin-2](https://user-images.githubusercontent.com/115361435/235083799-1fba754a-e518-4e22-9106-d4b700123b7c.png)
+ng weixin.png…]()
 
+3 将请求
 
 ## （更新）外部API使用介绍：
 - 要使用外部API，nano app.py（配置跨域与sender_params.json文件路径)
