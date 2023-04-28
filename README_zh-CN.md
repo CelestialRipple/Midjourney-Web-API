@@ -20,6 +20,8 @@ cd Midjourney-Web-API
 - 打开任一浏览器的开发者工具（右键/F12），选中网络（network）选项
 - 发送任意绘图请求
 - 开发者工具中搜索interaction，查看请求头部与负载
+
+
 example：
 ![weixin](https://user-images.githubusercontent.com/115361435/235084018-32aaad31-45f6-447d-b854-f92241c927e8.png)
 ![weixin-2](https://user-images.githubusercontent.com/115361435/235084031-3948e15c-f48f-41c8-aa43-9712cb310909.png)
