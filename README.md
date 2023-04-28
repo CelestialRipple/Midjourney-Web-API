@@ -1,43 +1,24 @@
 [中文版本](https://github.com/CelestialRipple/Midjourney_api/blob/main/README_zh-CN.md)
-# Midjourney_api
-unofficial Midjourney API
+# Midjourney-Web-API
+Unofficial Midjourney-Web-API, for learning and research purposes only.
 
-This is custom Midjourney API. Using it you could generate images by code. Working on Discord API.
+## :sparkles: Features
+* ✨ Simple and easy to deploy
+* 👋 Support for caching images, mainland China access friendly
+* 💾 Support image Upscale function, get HD large image
+* 📚 Multi-threaded concurrency, high-speed drawing
+* 💻 Automatic database cleanup and error handling functions are perfect
+* 🔐 Cross-domain restrictions can be set, anti-theft
 
-!! Don't forget Modjourney TOS doesn't allow any automation, so this project is research only purpose !!
+## QuickStart fast start
 
-Contains: 
-- Sender: for sending prompts to Midjourney
-- Receiver: works in terminal, download all the completed images to local folder
-
-Installation:
-1. Create Discord account and create your server(instruction here: https://discord.com/blog/starting-your-first-discord-server)
-2. Create Midjourney account and invite Midjourney Bot to your server (instruction here: https://docs.midjourney.com/docs/invite-the-bot)
-3. Make sure generation works from your server
-4. Log in to Discord in Chrome browser, open your server's text channel, click on three points upper right corner, then More Tools and then Developer Tools.
-Select Network tab, you'll see all the network activity of your page.
-5. Now type any prompt to generate in your text channel, and after you press Enter to send message with prompt, you'll see in Network Activity new line named "interaction".
-Press on it and choose Payload tab and you'll see payload_json - that's what we need!
-Copy channelid, authorization, application_id, guild_id, session_id, version and id values, we'll need it a little bit later.
-6. Clone this repo
-7. Open "sender_params.json" file and put all the values from paragraph 5 to it. Also fill in 'flags' field to specify special flags to your prompts
-8. Now you are ready to run files:
-- To start receiver script open terminal and type:
-python /path/to/cloned/dir/receiver.py --params /path/to/cloned/dir/sender_params.json --local_path '/path/to/folder/for/downloading/images'
-This script will show you all the generating progress and download images as soon as it will be ready
-- To send prompts for generation open another terminal and type:
-python //path/to/cloned/dir/sender.py --params /path/to/cloned/dir/sender_params.json --prompt 'your prompt here'
-
-9. Enjoy :)
-
-Take care of controling number of parralel requests - for normal and fastest work it should be not bigger than 3(in Basic and Standard plan, and 12 in Pro plan).
 
 ## (Updated) Introduction to the use of external APIs:
-- To use the external API, nano app.py (configure cross-domain with sender_params.json file path)
+- To use external API, nano app.py (configure cross-domain with sender_params.json file path)
 - python app.py
 ### Request method
 - post request: http://localhost:5000/api/send_and_receive"
-- Optional parameter: cdn=true (default false, when enabled the server will cache the image before sending, chinese access is more friendly)
+- Optional parameter: cdn=true (default false, when enabled the server will cache the image before sending, continental access is more friendly)
 Example:
 ```python
 import requests
@@ -75,22 +56,19 @@ else.
     print(response.text)
 ```
 
-### CDN cached images exist in the same directory folder and can be cleaned up on demand. The database is automatically refreshed every 24 hours to prevent expired images.
-- 中文支持可以联系me@hiripple.com
 
+## Update plan
 
-Project comments:
+- Model switching
+- Multi-account concurrency
+- Faster cookie retrieval
 
-This is the first simple API version, now I'm working on next one with:
-- local queue controller
-- ability to work with any number of Midjourney accounts in parralel to get much better and scalable performance
-- Upsampling script to send upsample request
-- And lots of other things.
+## Contact:
+For suggestions and cooperation: Me@hiripple.com
+Ask the author to eat Crazy Thursday to speed up the project: https://afdian.net/a/hiripple/plan
 
+## License
+MIT
 
-Contacts:
-
-For proposals and cooperation:
-normalabnormalai@gmail.com
-
-To help the project, USDT (ERC20) wallet: 0x589c18c17ef4fea0acea476fd4973dc5da82835c
+## Additions
+Sender.py and Receiver.py are based on https://github.com/George-iam/Midjourney_api
