@@ -5,10 +5,14 @@ class Sender:
 
     def __init__(self, 
                  params,
-                 index):
+                 index,flag):
         
         self.params = params
         self.index = index
+        try:
+          self.flag = int(flag)
+        except ValueError:
+          self.flag = 0  
         self.sender_initializer()
 
     def sender_initializer(self):
@@ -41,7 +45,7 @@ class Sender:
             'id': self.id,
             'name': 'imagine',
             'type': 1,
-            'options': [{'type': 3, 'name': 'prompt', 'value': str(prompt) + ' ' + self.flags}],
+            'options': [{'type': 3, 'name': 'prompt', 'value': str(prompt) + ' ' + self.flags[self.flag]}],
             'attachments': []}
             }
         
@@ -49,4 +53,4 @@ class Sender:
         while r.status_code != 204:
             r = requests.post('https://discord.com/api/v9/interactions', json = payload , headers = header)
 
-        print('prompt [{}] 发送成功!'.format(prompt))
+        print('prompt [{}] successfully sent!'.format(prompt))
