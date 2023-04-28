@@ -105,20 +105,3 @@ class Receiver:
             self.outputer()
             self.downloading_results()
             time.sleep(5)
-
-def parse_args(args):
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--params', help='Path to discord authorization and channel parameters', required=True)
-        
-    return parser.parse_args(args)
-
-if __name__ == "__main__":
-
-    args = sys.argv[1:]
-    args = parse_args(args)
-    params = args.params
-
-    print('=========== listening started ===========')
-    receiver = Receiver(params)
-    receiver.main()
