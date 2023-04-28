@@ -10,12 +10,12 @@
 * 🔐 可设置跨域限制，防盗用
 
 ## QuickStart快速开始
-1 clone项目
+1、 clone项目
 ```shell
 git clone https://github.com/CelestialRipple/Midjourney-Web-API
 cd Midjourney-Web-API
 ```
-2 获取Cookie（请确认你可以在discord中使用Midjourney绘图）
+2、 获取Cookie（请确认你可以在discord中使用Midjourney绘图）
 - 进入Discord中与Midjourney Bot的对话框-
 - 打开任一浏览器的开发者工具（右键/F12），选中网络（network）选项
 - 发送任意绘图请求
@@ -24,15 +24,15 @@ example：
 ![weixin](https://user-images.githubusercontent.com/115361435/235084018-32aaad31-45f6-447d-b854-f92241c927e8.png)
 ![weixin-2](https://user-images.githubusercontent.com/115361435/235084031-3948e15c-f48f-41c8-aa43-9712cb310909.png)
 
-3 将请求头部中的信息填入sender_params.json。
+3、 将请求头部中的信息填入sender_params.json。
 值得注意的时，如果你需要多线程画图，请将不同频道抓取的channelid填入channelid数组中（Standard计划最大并发数为3，PRO计划为12）
 
-4 启动Web-API
+4、 启动Web-API
 ```shell
 python app.py
 ```
 
-5(可选)进入APP.py配置跨域
+5、(可选)进入APP.py配置跨域
 ```shell
 nano app.py
 ```
@@ -76,7 +76,9 @@ else:
     print(f'Error: {response.status_code}')
     print(response.text)
 ```
-
+## 解答
+Q：sender_params.json中的信息隔多久更新？
+A：项目运行以来已经有两周，目前仍未过期。
 
 ## 更新计划
 
