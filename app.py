@@ -127,9 +127,10 @@ def send_and_receive():
   request_in_progress[available_thread_index] = True
 
   # 从请求中获取关键词参数
+  flag = request.args.get('flag', 0)
   data = request.get_json()
   prompt = data.get('prompt')
-  sender = Sender(params, available_thread_index)
+  sender = Sender(params, available_thread_index, flag)
   sender.send(prompt)
 
   # 使用 Receiver 类接收图片 URL
