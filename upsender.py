@@ -1,13 +1,12 @@
 import requests
 import json
-import argparse
-import sys
-
 
 class Sender:
 
-  def __init__(self, params):
-
+  def __init__(self, 
+                 params,
+                 index):
+    self.index = index
     self.params = params
     self.sender_initializer()
 
@@ -30,7 +29,7 @@ class Sender:
         payload = {'type': 3,
                    'application_id': self.application_id,
                    'guild_id': self.guild_id,
-                   'channel_id': self.channelid,
+                   'channel_id': self.channelid[self.index],
                    'session_id': self.session_id,
                    "message_flags": 0,
                    "message_id": message_id,
@@ -45,4 +44,3 @@ class Sender:
                               headers=header)
 
         print('Upscale request for message_id [{}] and number [{}] successfully sent!'.format(message_id, number))
-
