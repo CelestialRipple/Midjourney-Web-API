@@ -163,6 +163,12 @@ def serve_image(filename):
                         
 @app.route('/upscale', methods=['GET'])
 def upscale():
+    global request_in_progress
+
+    if request_in_progress:
+        return jsonify({'error': 'The current queue is full, please try again later（当前队列已满，请稍后再试）'})
+
+    request_in_progress = True
     file_name = request.args.get('file_name')
     number = request.args.get('number')
 
