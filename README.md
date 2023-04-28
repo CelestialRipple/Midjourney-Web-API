@@ -1,4 +1,4 @@
-[中文版本]([https://github.com/CelestialRipple/Midjourney_api/blob/main/README_zh-CN.md](https://github.com/CelestialRipple/Midjourney-Web-API/blob/main/README_zh-CN.md))
+[中文版本](https://github.com/CelestialRipple/Midjourney_api/blob/main/README_zh-CN.md](https://github.com/CelestialRipple/Midjourney-Web-API/blob/main/README_zh-CN.md)
 # Midjourney-Web-API
 Unofficial Midjourney-Web-API, for learning and research purposes only.
 
