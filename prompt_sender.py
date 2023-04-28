@@ -1,16 +1,14 @@
 import requests
 import json
-import time
-import re
-import argparse
-import sys
 
 class Sender:
 
     def __init__(self, 
-                 params):
+                 params,
+                 index):
         
         self.params = params
+        self.index = index
         self.sender_initializer()
 
     def sender_initializer(self):
@@ -36,7 +34,7 @@ class Sender:
         payload = {'type': 2, 
         'application_id': self.application_id,
         'guild_id': self.guild_id,
-        'channel_id': self.channelid,
+        'channel_id': self.channelid[self.index],
         'session_id': self.session_id,
         'data': {
             'version': self.version,
