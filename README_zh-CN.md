@@ -21,14 +21,22 @@ cd Midjourney-Web-API
 - 发送任意绘图请求
 - 开发者工具中搜索interaction，查看请求头部与负载
 example：
-![Uploadi![weixin-2](https://user-images.githubusercontent.com/115361435/235083799-1fba754a-e518-4e22-9106-d4b700123b7c.png)
-ng weixin.png…]()
+![weixin](https://user-images.githubusercontent.com/115361435/235084018-32aaad31-45f6-447d-b854-f92241c927e8.png)
+![weixin-2](https://user-images.githubusercontent.com/115361435/235084031-3948e15c-f48f-41c8-aa43-9712cb310909.png)
 
-3 将请求
+3 将请求头部中的信息填入sender_params.json。
+值得注意的时，如果你需要多线程画图，请将不同频道抓取的channelid填入channelid数组中（Standard计划最大并发数为3，PRO计划为12）
 
+4 启动Web-API
+```shell
+python app.py
+```
+
+5(可选)进入APP.py配置跨域
+```shell
+nano app.py
+```
 ## （更新）外部API使用介绍：
-- 要使用外部API，nano app.py（配置跨域与sender_params.json文件路径)
-- python app.py
 ### 请求方式
 - post请求：http://localhost:5000/api/send_and_receive"
 - 可选参数：cdn=true(默认false，启用后服务器将缓存图片然后再发送，大陆访问更友好）
