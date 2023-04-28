@@ -49,4 +49,4 @@ class Sender:
         while r.status_code != 204:
             r = requests.post('https://discord.com/api/v9/interactions', json = payload , headers = header)
 
-        print('prompt [{}] successfully sent!'.format(prompt))
+        print('prompt [{}] 发送成功!'.format(prompt))
