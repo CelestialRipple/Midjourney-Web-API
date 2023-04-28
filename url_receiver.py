@@ -66,38 +66,4 @@ class Receiver:
                     if '(Waiting to start)' in message['content']:
                         status = 'Waiting to start'
                     self.awaiting_list.loc[id] = [prompt, status]
-                    
-    
-    def outputer(self):
-        if len(self.awaiting_list) > 0:
-            print(datetime.now().strftime("%H:%M:%S"))
-            print('prompts in progress:')
-            print(self.awaiting_list)
-            print('=========================================')
-
-        waiting_for_download = [self.df.loc[i].prompt for i in self.df.index if self.df.loc[i].is_downloaded == 0]
-        if len(waiting_for_download) > 0:
-            print(datetime.now().strftime("%H:%M:%S"))
-            print('waiting for download prompts: ', waiting_for_download)
-            print('=========================================')
-
-    def downloading_results(self):
-        processed_prompts = []
-        for i in self.df.index:
-            if self.df.loc[i].is_downloaded == 0:
-                response = requests.get(self.df.loc[i].url)
-                with open(os.path.join(self.local_path, self.df.loc[i].filename), "wb") as req:
-                    req.write(response.content)
-                self.df.loc[i, 'is_downloaded'] = 1
-                processed_prompts.append(self.df.loc[i].prompt)
-        if len(processed_prompts) > 0:
-            print(datetime.now().strftime("%H:%M:%S"))
-            print('processed prompts: ', processed_prompts)
-            print('=========================================')
-  
-    def main(self):
-        while True:
-            self.collecting_results()
-            self.outputer()
-            self.downloading_results()
-            time.sleep(5)
+                   
