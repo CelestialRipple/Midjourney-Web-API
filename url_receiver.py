@@ -1,21 +1,17 @@
 import requests
 import json
-import numpy as np
 import time
 import pandas as pd
 import os
 import re
 from datetime import datetime
-import glob
-import argparse
-import sys
 
 class Receiver:
 
-    def __init__(self, params):
+    def __init__(self, params, index):
         
         self.params = params
-
+        self.index = index
         self.sender_initializer()
 
         self.df = pd.DataFrame(columns = ['prompt', 'url', 'filename', 'is_downloaded'])
@@ -26,7 +22,7 @@ class Receiver:
         with open(self.params, "r") as json_file:
             params = json.load(json_file)
 
-        self.channelid=params['channelid']
+        self.channelid=params['channelid'][self.index]
         self.authorization=params['authorization']
         self.headers = {'authorization' : self.authorization}
 
