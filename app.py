@@ -8,13 +8,14 @@ from urllib.parse import urlparse
 from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify
 from flask import send_from_directory
-from sender import Sender
+from prompt_sender import Sender
 from url_receiver import Receiver
 from flask_cors import CORS
 from upsender import Sender as UpSender
 
 app = Flask(__name__)
-CORS(app, origins="https://example.com")  # 添加 origins 参数以限制允许的来源
+CORS(app, origins="*")  # 允许所有跨域访问，但可能存在安全风险
+# CORS(app, origins="https://example.com")  # 添加 origins 参数以限制允许的来源
 
 request_in_progress = False
 
@@ -228,12 +229,11 @@ def upscale():
 
 if __name__ == "__main__":
 
-    # 指定参数，这里修改为您提供的路径
-    params = '/home/runner/API-test/sender_params.json'
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    params = os.path.join(current_directory, 'sender_params.json')
     init_db();
-
     db_path = 'images.db'
     clear_db_thread = threading.Thread(target=clear_database_every_24_hours, args=(db_path,))
     clear_db_thread.daemon = True  # 设置为守护线程，这样在主程序结束时，线程也会结束
     clear_db_thread.start()
-    app.run(debug=True, host='0.0.0.0')
+    app.run(host='0.0.0.0')
