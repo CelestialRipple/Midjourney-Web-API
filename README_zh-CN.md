@@ -31,6 +31,7 @@ example：
 
 4、 启动Web-API
 ```shell
+pip -r requirements.txt
 python app.py
 ```
 

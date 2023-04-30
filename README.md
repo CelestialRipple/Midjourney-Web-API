@@ -30,6 +30,7 @@ It is worth noting that if you need multi-threaded drawing, please fill in the c
 
 4、 Start Web-API
 ```shell
+pip -r requirements.txt
 python app.py
 ```
 
