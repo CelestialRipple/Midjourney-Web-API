@@ -137,8 +137,7 @@ def send_and_receive():
   receiver = Receiver(params, available_thread_index)
   receiver.collecting_results()
 
-  # 记录当前已检测到的图片数量
-  initial_image_count = len(receiver.df.index)
+  initial_image_timestamp = receiver.latest_image_timestamp
 
   # 设置最大等待时间
   max_wait_time = 300  # 最大等待时间，单位为秒
@@ -152,18 +151,18 @@ def send_and_receive():
   wait_time = 0
   while wait_time < max_wait_time:
     receiver.collecting_results()
-    current_image_count = len(receiver.df.index)
+    current_image_timestamp = receiver.latest_image_timestamp
 
-    if current_image_count > initial_image_count:
-      # 发现新图片，跳出循环
-      timeout_timer.cancel()  # 取消定时器
-      break
+    if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
+        # 发现新图片，跳出循环
+        timeout_timer.cancel()  # 取消定时器
+        break
 
     # 等待一段时间
     time.sleep(1)
     wait_time += 1
 
-  if current_image_count > initial_image_count:
+  if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
     latest_image_id = receiver.df.index[-1]
     latest_image_url = receiver.df.loc[latest_image_id].url
     latest_filename = receiver.df.loc[latest_image_id].filename
@@ -249,24 +248,22 @@ def upscale():
   receiver = Receiver(params, thread_index)
   receiver.collecting_results()
 
-  # 记录当前已检测到的图片数量
-  initial_image_count = len(receiver.df.index)
+  initial_image_timestamp = receiver.latest_image_timestamp
 
   # 等待新图片出现
   max_wait_time = 300  # 最大等待时间，单位为秒
   wait_time = 0
   while wait_time < max_wait_time:
     receiver.collecting_results()
-    current_image_count = len(receiver.df.index)
-
-    if current_image_count > initial_image_count:
+    current_image_timestamp = receiver.latest_image_timestamp
+    if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
       # 发现新图片，跳出循环
       break
 
     # 等待一段时间
     time.sleep(1)
     wait_time += 1
-  if current_image_count > initial_image_count:
+  if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
     latest_image_id = receiver.df.index[-1]
     latest_image_url = receiver.df.loc[latest_image_id].url
     cdn = request.args.get('cdn', False)
