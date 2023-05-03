@@ -4,7 +4,8 @@ import time
 import pandas as pd
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+from dateutil.parser import parse
 
 class Receiver:
 
@@ -13,7 +14,7 @@ class Receiver:
         self.params = params
         self.index = index
         self.sender_initializer()
-
+        self.latest_image_timestamp = datetime.now(timezone.utc) - timedelta(days=1)
         self.df = pd.DataFrame(columns = ['prompt', 'url', 'filename', 'is_downloaded'])
 
     
@@ -28,7 +29,7 @@ class Receiver:
 
     def retrieve_messages(self):
         r = requests.get(
-            f'https://discord.com/api/v10/channels/{self.channelid}/messages?limit={100}', headers=self.headers)
+            f'https://discord.com/api/v10/channels/{self.channelid}/messages?limit={10}', headers=self.headers)
         jsonn = json.loads(r.text)
         return jsonn
 
@@ -49,6 +50,7 @@ class Receiver:
                         filename = message['attachments'][0]['filename']
                         if id not in self.df.index:
                             self.df.loc[id] = [prompt, url, filename, 0]
+                            self.latest_image_timestamp = parse(message["timestamp"])
 
                     else:
                         id = message['id']
