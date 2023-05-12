@@ -125,73 +125,77 @@ def send_and_receive():
         })
 
   request_in_progress[available_thread_index] = True
+  try:
+      # 从请求中获取关键词参数
+      flag = request.args.get('flag', 0)
+      data = request.get_json()
+      prompt = data.get('prompt')
+      sender = Sender(params, available_thread_index, flag)
+      sender.send(prompt)
 
-  # 从请求中获取关键词参数
-  flag = request.args.get('flag', 0)
-  data = request.get_json()
-  prompt = data.get('prompt')
-  sender = Sender(params, available_thread_index, flag)
-  sender.send(prompt)
+      # 使用 Receiver 类接收图片 URL
+      receiver = Receiver(params, available_thread_index)
+      receiver.collecting_results()
 
-  # 使用 Receiver 类接收图片 URL
-  receiver = Receiver(params, available_thread_index)
-  receiver.collecting_results()
+      initial_image_timestamp = receiver.latest_image_timestamp
 
-  initial_image_timestamp = receiver.latest_image_timestamp
+      # 设置最大等待时间
+      max_wait_time = 300  # 最大等待时间，单位为秒
 
-  # 设置最大等待时间
-  max_wait_time = 300  # 最大等待时间，单位为秒
-
-  # 创建一个定时器，在最大等待时间后重置request_in_progress标志
-  timeout_timer = threading.Timer(max_wait_time,     reset_request_in_progress, args=(available_thread_index,))
-  timeout_timer.start()
+      # 创建一个定时器，在最大等待时间后重置request_in_progress标志
+      timeout_timer = threading.Timer(max_wait_time,     reset_request_in_progress, args=(available_thread_index,))
+      timeout_timer.start()
 
 
-  # 等待新图片出现
-  wait_time = 0
-  while wait_time < max_wait_time:
-    receiver.collecting_results()
-    current_image_timestamp = receiver.latest_image_timestamp
+      # 等待新图片出现
+      wait_time = 0
+      while wait_time < max_wait_time:
+        receiver.collecting_results()
+        current_image_timestamp = receiver.latest_image_timestamp
 
-    if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
-        # 发现新图片，跳出循环
-        timeout_timer.cancel()  # 取消定时器
-        break
+        if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
+            # 发现新图片，跳出循环
+            timeout_timer.cancel()  # 取消定时器
+            break
 
-    # 等待一段时间
-    time.sleep(1)
-    wait_time += 1
+        # 等待一段时间
+        time.sleep(1)
+        wait_time += 1
 
-  if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
-    latest_image_id = receiver.df.index[-1]
-    latest_image_url = receiver.df.loc[latest_image_id].url
-    latest_filename = receiver.df.loc[latest_image_id].filename
-    cdn = request.args.get('cdn', False)
-    if cdn:
-      image_filename = download_image(latest_image_url)
-      latest_image_url = f"/images/{image_filename}"
-    conn = sqlite3.connect('images.db')
-    c = conn.cursor()
-    c.execute(
-    "INSERT OR REPLACE INTO images (message_id, url, filename, thread_index) VALUES (?, ?, ?, ?)",
-    (latest_image_id, latest_image_url, latest_filename, available_thread_index))
+      if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
+        latest_image_id = receiver.df.index[-1]
+        latest_image_url = receiver.df.loc[latest_image_id].url
+        latest_filename = receiver.df.loc[latest_image_id].filename
+        cdn = request.args.get('cdn', False)
+        if cdn:
+          image_filename = download_image(latest_image_url)
+          latest_image_url = f"/images/{image_filename}"
+        conn = sqlite3.connect('images.db')
+        c = conn.cursor()
+        c.execute(
+        "INSERT OR REPLACE INTO images (message_id, url, filename, thread_index) VALUES (?, ?, ?, ?)",
+        (latest_image_id, latest_image_url, latest_filename, available_thread_index))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    # 输出存储在数据库中的数据
-    print_stored_data()
-  else:
-    latest_image_url = None
-  with request_in_progress_lock:
-    request_in_progress[available_thread_index] = False
-  # 将最新图片的URL作为响应返回
-  if timeout_error_message:
-    response = jsonify({'error': timeout_error_message})
-    timeout_error_message = None
-    return response
-  return jsonify({'latest_image_url': latest_image_url})
-
+        # 输出存储在数据库中的数据
+        print_stored_data()
+      else:
+        latest_image_url = None
+      with request_in_progress_lock:
+        request_in_progress[available_thread_index] = False
+      # 将最新图片的URL作为响应返回
+      if timeout_error_message:
+        response = jsonify({'error': timeout_error_message})
+        timeout_error_message = None
+        return response
+      return jsonify({'latest_image_url': latest_image_url})
+  except Exception as e:
+        print(f"Error: {e}")
+        with request_in_progress_lock:
+            request_in_progress[available_thread_index] = False
+        return jsonify({'error': str(e)})
 
 def download_image(url):
   response = requests.get(url)
@@ -240,43 +244,49 @@ def upscale():
   if message_id is None:
     return jsonify(
       {'error': f'No message_id found for file_name: {file_name}'})
-  sender = UpSender(params, thread_index)
-  uuid = extract_uuid(file_name)
-  sender.send(message_id, number, uuid)
+  try:
+      sender = UpSender(params, thread_index)
+      uuid = extract_uuid(file_name)
+      sender.send(message_id, number, uuid)
 
-  # 使用 Receiver 类接收图片 URL
-  receiver = Receiver(params, thread_index)
-  receiver.collecting_results()
+      # 使用 Receiver 类接收图片 URL
+      receiver = Receiver(params, thread_index)
+      receiver.collecting_results()
 
-  initial_image_timestamp = receiver.latest_image_timestamp
+      initial_image_timestamp = receiver.latest_image_timestamp
 
-  # 等待新图片出现
-  max_wait_time = 300  # 最大等待时间，单位为秒
-  wait_time = 0
-  while wait_time < max_wait_time:
-    receiver.collecting_results()
-    current_image_timestamp = receiver.latest_image_timestamp
-    if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
-      # 发现新图片，跳出循环
-      break
+      # 等待新图片出现
+      max_wait_time = 300  # 最大等待时间，单位为秒
+      wait_time = 0
+      while wait_time < max_wait_time:
+        receiver.collecting_results()
+        current_image_timestamp = receiver.latest_image_timestamp
+        if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
+          # 发现新图片，跳出循环
+          break
 
-    # 等待一段时间
-    time.sleep(1)
-    wait_time += 1
-  if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
-    latest_image_id = receiver.df.index[-1]
-    latest_image_url = receiver.df.loc[latest_image_id].url
-    cdn = request.args.get('cdn', False)
-    if cdn:
-      image_filename = download_image(latest_image_url)
-      latest_image_url = f"/images/{image_filename}"
-  else:
-    latest_image_url = None
+        # 等待一段时间
+        time.sleep(1)
+        wait_time += 1
+      if current_image_timestamp and current_image_timestamp > initial_image_timestamp:
+        latest_image_id = receiver.df.index[-1]
+        latest_image_url = receiver.df.loc[latest_image_id].url
+        cdn = request.args.get('cdn', False)
+        if cdn:
+          image_filename = download_image(latest_image_url)
+          latest_image_url = f"/images/{image_filename}"
+      else:
+        latest_image_url = None
 
-  request_in_progress[thread_index] = False
-  # 将最新图片的URL作为响应返回
-  return jsonify({'latest_image_url': latest_image_url})
-
+      with request_in_progress_lock:
+        request_in_progress[available_thread_index] = False
+      # 将最新图片的URL作为响应返回
+      return jsonify({'latest_image_url': latest_image_url})
+  except Exception as e:
+        print(f"Error: {e}")
+        with request_in_progress_lock:
+            request_in_progress[available_thread_index] = False
+        return jsonify({'error': str(e)})
 
 if __name__ == "__main__":
 
