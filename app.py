@@ -279,13 +279,13 @@ def upscale():
         latest_image_url = None
 
       with request_in_progress_lock:
-        request_in_progress[available_thread_index] = False
+        request_in_progress[thread_index] = False
       # 将最新图片的URL作为响应返回
       return jsonify({'latest_image_url': latest_image_url})
   except Exception as e:
         print(f"Error: {e}")
         with request_in_progress_lock:
-            request_in_progress[available_thread_index] = False
+            request_in_progress[thread_index] = False
         return jsonify({'error': str(e)})
 
 if __name__ == "__main__":
